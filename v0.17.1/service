@@ -1,0 +1,270 @@
+{
+  "$id": "https://platformatic.dev/schemas/v0.17.1/service",
+  "type": "object",
+  "properties": {
+    "server": {
+      "type": "object",
+      "properties": {
+        "hostname": {
+          "type": "string"
+        },
+        "port": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "string"
+            }
+          ]
+        },
+        "pluginTimeout": {
+          "type": "integer"
+        },
+        "healthCheck": {
+          "anyOf": [
+            {
+              "type": "boolean"
+            },
+            {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "type": "boolean"
+                },
+                "interval": {
+                  "type": "integer"
+                }
+              },
+              "additionalProperties": true
+            }
+          ]
+        },
+        "cors": {
+          "type": "object",
+          "$comment": "See https://github.com/fastify/fastify-cors",
+          "properties": {
+            "origin": {
+              "anyOf": [
+                {
+                  "type": "boolean"
+                },
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "array",
+                  "items": {
+                    "anyOf": [
+                      {
+                        "type": "string"
+                      },
+                      {
+                        "type": "object",
+                        "properties": {
+                          "regexp": {
+                            "type": "string"
+                          }
+                        },
+                        "required": [
+                          "regexp"
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "type": "object",
+                  "properties": {
+                    "regexp": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "regexp"
+                  ]
+                }
+              ]
+            },
+            "methods": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            },
+            "allowedHeaders": {
+              "type": "string",
+              "description": "Comma separated string of allowed headers."
+            },
+            "exposedHeaders": {
+              "anyOf": [
+                {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                {
+                  "type": "string",
+                  "description": "Comma separated string of exposed headers."
+                }
+              ]
+            },
+            "credentials": {
+              "type": "boolean"
+            },
+            "maxAge": {
+              "type": "integer"
+            },
+            "preflightContinue": {
+              "type": "boolean",
+              "default": false
+            },
+            "optionsSuccessStatus": {
+              "type": "integer",
+              "default": 204
+            },
+            "preflight": {
+              "type": "boolean",
+              "default": true
+            },
+            "strictPreflight": {
+              "type": "boolean",
+              "default": true
+            },
+            "hideOptionsRoute": {
+              "type": "boolean",
+              "default": true
+            }
+          },
+          "additionalProperties": false
+        }
+      },
+      "required": [
+        "hostname",
+        "port"
+      ]
+    },
+    "plugins": {
+      "$id": "#plugins",
+      "type": "object",
+      "properties": {
+        "paths": {
+          "type": "array",
+          "items": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string"
+                  },
+                  "options": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "stopTimeout": {
+          "type": "integer"
+        },
+        "typescript": {
+          "type": "boolean"
+        },
+        "fallback": {
+          "type": "boolean"
+        },
+        "hotReload": {
+          "type": "boolean",
+          "default": true
+        }
+      },
+      "additionalProperties": false,
+      "required": [
+        "paths"
+      ]
+    },
+    "metrics": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "port": {
+              "type": "integer"
+            },
+            "hostname": {
+              "type": "string"
+            },
+            "auth": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "type": "string"
+                },
+                "password": {
+                  "type": "string"
+                }
+              },
+              "additionalProperties": false,
+              "required": [
+                "username",
+                "password"
+              ]
+            }
+          },
+          "additionalProperties": false
+        }
+      ]
+    }
+  },
+  "additionalProperties": {
+    "watch": {
+      "anyOf": [
+        {
+          "type": "object",
+          "properties": {
+            "type": "object",
+            "properties": {
+              "allow": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "minItems": 1,
+                "nullable": true,
+                "default": null
+              },
+              "ignore": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                },
+                "nullable": true,
+                "default": null
+              }
+            },
+            "additionalProperties": false
+          }
+        },
+        {
+          "type": "boolean"
+        }
+      ]
+    },
+    "hotReload": {
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "server"
+  ]
+}
