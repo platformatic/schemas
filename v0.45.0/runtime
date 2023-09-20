@@ -1,0 +1,214 @@
+{
+  "$id": "https://platformatic.dev/schemas/v0.45.0/runtime",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "autoload": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "resolvePath": true
+        },
+        "exclude": {
+          "type": "array",
+          "default": [],
+          "items": {
+            "type": "string"
+          }
+        },
+        "mappings": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "id",
+              "config"
+            ],
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "config": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "telemetry": {
+      "$id": "/OpenTelemetry",
+      "type": "object",
+      "properties": {
+        "serviceName": {
+          "type": "string",
+          "description": "The name of the service. Defaults to the folder name if not specified."
+        },
+        "version": {
+          "type": "string",
+          "description": "The version of the service (optional)"
+        },
+        "skip": {
+          "type": "array",
+          "description": "An array of paths to skip when creating spans. Useful for health checks and other endpoints that do not need to be traced.",
+          "items": {
+            "type": "object",
+            "properties": {
+              "path": {
+                "type": "string",
+                "description": "The path to skip. Can be a string or a regex."
+              },
+              "method": {
+                "description": "HTTP method to skip",
+                "type": "string",
+                "enum": [
+                  "GET",
+                  "POST",
+                  "PUT",
+                  "DELETE",
+                  "PATCH",
+                  "HEAD",
+                  "OPTIONS"
+                ]
+              }
+            }
+          }
+        },
+        "exporter": {
+          "anyOf": [
+            {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "type": {
+                    "type": "string",
+                    "enum": [
+                      "console",
+                      "otlp",
+                      "zipkin",
+                      "memory"
+                    ],
+                    "default": "console"
+                  },
+                  "options": {
+                    "type": "object",
+                    "description": "Options for the exporter. These are passed directly to the exporter.",
+                    "properties": {
+                      "url": {
+                        "type": "string",
+                        "description": "The URL to send the traces to. Not used for console or memory exporters."
+                      },
+                      "headers": {
+                        "type": "object",
+                        "description": "Headers to send to the exporter. Not used for console or memory exporters."
+                      }
+                    }
+                  },
+                  "additionalProperties": false
+                }
+              }
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "console",
+                    "otlp",
+                    "zipkin",
+                    "memory"
+                  ],
+                  "default": "console"
+                },
+                "options": {
+                  "type": "object",
+                  "description": "Options for the exporter. These are passed directly to the exporter.",
+                  "properties": {
+                    "url": {
+                      "type": "string",
+                      "description": "The URL to send the traces to. Not used for console or memory exporters."
+                    },
+                    "headers": {
+                      "type": "object",
+                      "description": "Headers to send to the exporter. Not used for console or memory exporters."
+                    }
+                  }
+                },
+                "additionalProperties": false
+              }
+            }
+          ]
+        }
+      },
+      "required": [
+        "serviceName"
+      ],
+      "additionalProperties": false
+    },
+    "services": {
+      "type": "array",
+      "default": [],
+      "items": {
+        "type": "object",
+        "required": [
+          "id",
+          "path",
+          "config"
+        ],
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "path": {
+            "type": "string",
+            "resolvePath": true
+          },
+          "config": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "entrypoint": {
+      "type": "string"
+    },
+    "hotReload": {
+      "anyOf": [
+        {
+          "type": "boolean"
+        },
+        {
+          "type": "string"
+        }
+      ]
+    },
+    "allowCycles": {
+      "type": "boolean"
+    },
+    "$schema": {
+      "type": "string"
+    }
+  },
+  "anyOf": [
+    {
+      "required": [
+        "autoload",
+        "entrypoint"
+      ]
+    },
+    {
+      "required": [
+        "services",
+        "entrypoint"
+      ]
+    }
+  ]
+}
